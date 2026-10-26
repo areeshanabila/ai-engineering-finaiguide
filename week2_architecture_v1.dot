@@ -1,0 +1,22 @@
+digraph G {
+ graph [rankdir=LR, bgcolor="white", pad="0.28", nodesep="0.35", ranksep="0.62", fontname="DejaVu Sans", label="FinAI Guide — V1 Conceptual Architecture (Topic 2 Part C)", labelloc=t, fontsize=20, fontcolor="#16324f"];
+ node [shape=box, style="rounded,filled", fillcolor="#e9f4fa", color="#80b0c7", fontname="DejaVu Sans", fontsize=11, margin="0.18,0.12"];
+ edge [color="#57798a", arrowsize=0.7, fontname="DejaVu Sans", fontsize=9];
+ user [label="User\n(young adult)", fillcolor="#dff4eb"];
+ ui [label="Chat interface\n(question / citations)"];
+ safety [label="Input privacy +\nscope control", fillcolor="#ffefdf"];
+ retrieve [label="Knowledge retrieval\n(relevant passages)"];
+ gen [label="Language-model service\n(grounded generation)", fillcolor="#e6e3ff"];
+ check [label="Citation / answer check\n+ abstain if unsupported", fillcolor="#ffefdf"];
+ answer [label="Educational answer\n+ document/page citations", fillcolor="#dff4eb"];
+ pdf [label="3 approved PDFs\nMFPC / FEN / EPF", fillcolor="#e4f6ec"];
+ ingest [label="Extract + chunk text\nretain page/year/source"];
+ index [label="Searchable knowledge index\nwith page metadata"];
+ monitor [label="Evaluation + metrics\n(latency, errors, grounding)", fillcolor="#f0eef7"];
+ user -> ui -> safety -> retrieve -> gen -> check -> answer;
+ pdf -> ingest -> index -> retrieve;
+ retrieve -> gen [label="passages + provenance"];
+ gen -> check [label="draft response"];
+ check -> answer [label="verified or safe refusal"];
+ ui -> monitor [style=dashed]; retrieve -> monitor [style=dashed]; check -> monitor [style=dashed];
+}
