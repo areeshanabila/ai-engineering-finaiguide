@@ -1,77 +1,62 @@
 # Requirements Specification — FinAI Guide
 
-**Version:** 1.0 (Topic 2 — Part A)  
-**Status:** Proposed, pre-implementation; numeric thresholds are acceptance targets, not achieved results.
+Version: 1.0
 
-## Section 0 — Project Framing and Application Scope Checkpoint
+Project: FinAI Guide: A RAG-Based Financial Education Assistant for Malaysian Young Adults  
+Course: AI Engineering (SAIA 3113)  
+Status: Proposed Week 2 specification. The requirements and thresholds below are targets, not completed implementation or test results.
 
-| Framing element | FinAI Guide definition |
-|---|---|
-| Problem + evidence | Financial education is a documented Malaysian priority (BNM FCI Survey 2024, [R1]); FEN defines budgeting and savings competencies ([R3]). Users currently navigate separate documents; whether a chatbot improves accessibility must be evaluated. |
-| Existing approach 1 | AKPK/MyBijak Kewangan provides financial education and budgeting tools ([R8]); not assessed here as a citation-grounded Q&A implementation for our selected PDFs. |
-| Existing approach 2 | Zhao et al. (2024) studies financial RAG pipeline choices ([R5]); not a ready-made Malaysian youth education product. |
-| Existing approach 3 | Swacha & Gracel (2025) surveys educational RAG chatbots ([R6]); does not establish performance on our documents. |
-| Engineering gap | Demonstrate reliable retrieval, grounded plain-language answers, verifiable page citations, safe boundaries, and usable latency over a small Malaysian PDF collection. |
-| O1 — Design | Design a controlled PDF knowledge pipeline and document-grounded chatbot architecture. |
-| O2 — Develop | Build an English-language RAG chatbot with evidence-backed answers, citations, and scope controls. |
-| O3 — Evaluate | Measure retrieval relevance, answer correctness, citation support, latency, and safety. |
-| Intended users | Malaysian university students and young adults aged approximately 18–30. |
-| Supported tasks | Ask what budgeting, emergency funds, saving habits, basic cash flow, and reference expenditure guidance mean; receive understandable answers and document/page references. |
-| Information / knowledge domain | Only educational topics explicitly supported by three approved PDFs ([R2], [R3], [R4]). |
-| Operating context | Individual student project, web-based chat, small approved English PDF corpus, limited-cost development/deployment. |
-| Important constraints | One semester, limited budget, three publicly accessible PDFs, model availability, publisher rights, variable response latency, no confidential financial data. |
-| Explicit out-of-scope tasks | Personalised investment/loan/product selection, creditworthiness decisions, financial forecasting, bank account integration, analysis of actual user transactions, tax/legal advice, autonomous actions, claims of professional financial-adviser status. |
-| Evaluation focus | Can the chatbot answer in-scope questions accurately and with supported page citations while refusing unsupported/personalised requests within acceptable latency? |
+## Section 0 — Project Framing & Application Scope Checkpoint
+
+| Framing Element | Explanation |
+|-----------------|-------------|
+| **Problem Evidence** | Malaysian students and young adults may need help finding and understanding financial education information. BNM's 2024 survey recorded a financial knowledge score of 62.9, compared with 60.2 in 2021, while the behaviour score fell from 61.9 to 59.9. [BNM, Annual Report 2024, pp. 55–59](https://www.bnm.gov.my/documents/20124/17493532/ar2024_en_box4.pdf). The national strategy also highlights the need to strengthen students' everyday money management and longer-term planning before employment. [FEN, National Strategy for Financial Literacy 2026–2030, pp. 26–27](https://www.fenetwork.my/wp-content/uploads/2025/10/FEN_NS2_ENG_Interactive_FA_LowRes.pdf). These sources support the educational need; difficulty navigating PDFs remains a project assumption to explore through user feedback. |
+| **Existing Approaches** | **1. MoneyMama:** Conversational money assistance and financial tools. [Official website](https://moneymama.co/). Its public description is not enough to independently assess retrieval and citation performance on this project's documents.<br>**2. AKPK MyBijak Kewangan:** Financial assessments, learning modules, articles and budget simulators. [Government service description](https://www.malaysia.gov.my/en/digital-services/mybijak-kewangan-financial-management). These listed services support learning and planning but do not by themselves establish the proposed cross-document question-answering experience.<br>**3. PIDM Emergency Savings Calculator:** Estimates an emergency savings target and the time to reach it. [Official calculator](https://www.pidm.gov.my/finlit/pidm-emergency-savings-calculator). Its scope is a structured calculation rather than general financial education questions. No unsupported claim is made that these services lack RAG or citations. |
+| **Project / Engineering Gap** | Develop a manageable assistant whose selected documents, retrieved evidence, citations and test results can be inspected. The practical gap addressed here is the need to connect plain-language questions to explanations supported by a controlled set of Malaysian financial education PDFs. This is a project-level engineering opportunity, not a claim of scientific novelty. |
+| **Objective O1** | To design a RAG architecture and PDF processing pipeline that preserves document titles, source links and page information. |
+| **Objective O2** | To develop a financial education chatbot that retrieves relevant passages, provides answers with citations and handles unsupported questions and personalised advice requests appropriately. |
+| **Objective O3** | To evaluate retrieval relevance, answer correctness, citation support, response time and safe handling using a defined set of test questions. |
+| **Intended Users** | Malaysian university students and young adults who want to understand everyday financial concepts. The initial version will support English questions. |
+| **Supported Tasks** | Ask questions about budgeting, saving, emergency funds and general money management; receive clear explanations based on approved documents; inspect document and page citations; receive an honest response when evidence is missing. Published spending estimates may be explained only with their original context. |
+| **Information / Knowledge Domain** | Selected educational sections from Malaysian public financial education PDFs. Proposed sources are [MFPC's My Money & Me Guide (2024)](https://www.mfpc.org.my/wp-content/uploads/2024/09/Guide-Book-New.pdf), [FEN's Financial Literacy Core Competencies for Malaysian Adults](https://www.fenetwork.my/wp-content/uploads/2023/02/FLCC-for-Malaysian-adults_compressed.pdf), and [EPF/KWSP's Belanjawanku 2026](https://www.kwsp.gov.my/documents/d/guest/booklet-belanjawanku-2026). The first two links were accessible during Week 1 source checking. The third edition is [listed by UM SWRC](https://swrc.um.edu.my/related-news-amp-publications-belanjawanku), but its PDF download is unconfirmed. All files need local extraction and content checks. FEN's document is a competency framework, so its usefulness as answer content must be checked. |
+| **Operating Context** | An individual semester prototype accessed through a browser, initially for one active user at a time. A developer prepares the approved document collection before users ask questions. An internet connection may be needed for a language model service. No user account or personal financial profile is required. |
+| **Important Constraints** | One student and one semester; a small knowledge base of 2–3 approved PDFs; limited model/API budget; no model training from scratch; no guarantee of live financial information. Begin with extractable text PDFs; scanned documents requiring OCR are outside V1. Model, database and interface technologies remain open at this conceptual stage. Source permissions must be checked before public redistribution. |
+| **Explicit Out-of-Scope Tasks** | Personalised financial or investment advice; product recommendations; legal, tax or medical advice; autonomous financial decisions; bank statement uploads; transaction analysis; expense categorisation; receipt/OCR processing; financial profiling; and integration with the separate FinAI FYP expense monitoring system. |
+| **Evaluation Focus** | Can the system retrieve relevant evidence and give correct, understandable answers with supporting citations, while meeting the response-time target and handling missing evidence, unsafe requests and defined privacy risks? Evaluate system performance; do not claim improved financial behaviour without a separate user study. |
 
 ## Section 1 — Functional Requirements
 
-| ID | Requirement — The system SHALL | Scope boundary — SHALL NOT |
-|---|---|---|
-| FR1 | The system shall extract and index readable text from the three approved PDFs, retaining document title, publication year, and page number for each retrievable passage. | It shall not silently add unapproved internet pages or documents to the knowledge base. |
-| FR2 | The system shall accept an English-language question about basic personal financial education and retrieve relevant passages from the approved collection. | It shall not treat model memory as a substitute for the approved sources. |
-| FR3 | The system shall generate a clear educational response grounded in retrieved passages and display document title and page references for substantive sourced claims. | It shall not fabricate references or present unsupported claims as documented facts. |
-| FR4 | The system shall state when adequate evidence is unavailable and decline or redirect personalised financial recommendations and other out-of-scope requests. | It shall not recommend a specific financial product or decide what an individual should purchase, borrow, or invest in. |
-| FR5 | The system shall present answers and citations in a readable chat interface, display a general-information disclaimer, and allow users to submit follow-up questions. | It shall not require bank credentials, account details, or uploaded personal statements. |
+| # | Requirement — The system SHALL | Scope Boundary — SHALL NOT (where relevant) |
+|---|-------------------------------|---------------------------------------------|
+| **FR1** | The system shall accept developer-approved, text-based PDFs for its knowledge collection and make their educational content available with document title, source URL, version or year where available, and page reference. | The system shall not accept personal document uploads from chatbot users or silently replace a failed document with unverified content. |
+| **FR2** | The system shall retrieve relevant passages and answer English questions about the approved budgeting, saving, emergency fund and money management topics using those passages. | The system shall not present unsupported model knowledge as information from the approved documents. |
+| **FR3** | The system shall show a document title, page reference and source link for each substantive document-based answer, and retain the relevant year and category when explaining published figures. | The system shall not invent references or apply a published estimate to a different city, household category or year without explanation. |
+| **FR4** | The system shall distinguish supported educational questions, questions with insufficient evidence, and requests outside its scope, then provide an answer, an evidence limitation message, or a safe decline and suitable next step. | The system shall not give personalised financial advice, recommend products, or make decisions for users. |
+| **FR5** | The system shall provide a browser-based question-and-answer interface that shows the question, a clear English response, source references where relevant, an educational-use notice, and an understandable message if a request fails. | The system shall not require an account, financial profile or sensitive identifier to ask an educational question. |
 
 ## Section 2 — Non-Functional Requirements
 
-| ID | Quality attribute | Requirement | Measurement method | Metric | Proposed threshold |
-|---|---|---|---|---|---|
-| NFR1 | Performance | The system shall return responses within a practical interactive latency. | Time 30 fixed questions under the same deployment conditions; record total user-submit-to-render time. | p90 end-to-end latency | ≤ 12 seconds |
-| NFR2 | Answer correctness | The system shall give source-consistent answers to answerable educational questions. | Two-pass manual scoring of 30 answerable questions using a fixed correctness rubric and source evidence. | Correct answers / answerable questions | ≥ 80% |
-| NFR3 | Retrieval relevance | The system shall retrieve a relevant passage for answerable questions. | Manually label supporting passages/pages for 30 answerable questions; inspect top 3 retrieved results. | Recall@3 (question-level) | ≥ 80% |
-| NFR4 | Reliability | The system shall handle empty queries, failed retrieval, and model/API failures without crashing or leaking debug details. | Run 15 defined negative/error scenarios. | Graceful-handling success rate | 100% |
-| NFR5 | Maintainability | An approved replacement PDF shall be incorporated through a documented re-indexing procedure without code changes to the chat UI. | Replace one test document with an approved revised test fixture; re-index and verify query results. | Update/re-index elapsed time | ≤ 15 minutes for corpus of 3 PDFs |
+| # | Quality Attribute | Requirement | Measurement Method | Metric | Threshold |
+|---|-------------------|-------------|--------------------|--------|-----------|
+| **NFR1** | Performance | The system shall return complete responses within the agreed interactive response-time target. | Run the 30 answerable and 10 unanswerable questions three times after one warm-up query. Measure from submission to the complete displayed response, including retrieval, model generation and output checks. | p90 end-to-end latency over 120 requests. | **≤12 seconds**. Use the nearest-rank definition. A request with no complete response by the 30-second deadline is recorded at 30 seconds and as a failure; do not omit it. |
+| **NFR2** | Correctness | The system shall answer supported financial education questions accurately against the approved source content. | Manually score 30 answerable questions using the answer key and correctness rubric in the evaluation file. | Correct response rate = correct answers / 30 × 100. | **≥80%**, or at least **24/30**. Incorrect declines, errors and timeouts count as incorrect. |
+| **NFR3** | Retrieval Quality | The system shall retrieve enough relevant evidence to support supported questions. | For each of the 30 answerable questions, label 1–3 required evidence passages after freezing the document and chunk versions. Compare these labels with the top three retrieved passages. | Macro Recall@3 = mean of relevant labelled passages retrieved in top 3 / all required labelled passages for each question. | **≥80%** across 30 questions. Empty retrieval counts as zero. |
+| **NFR4** | Reliability | The system shall handle defined invalid inputs and service or document failures without an uncaught error or fabricated answer. | Run the 15 error scenarios in the evaluation file; inspect the visible message and application behaviour. | Gracefully handled scenarios / 15 × 100. | **100% (15/15)**. Each case must show an actionable message within 30 seconds, expose no secret or raw traceback, and allow a later valid request or documented recovery. |
+| **NFR5** | Maintainability | The system shall make an approved replacement PDF available and retire its previous version within a short update cycle. | Replace one approved text-based PDF of up to 60 pages. Time validation, processing and knowledge update, then check one changed fact and the active source version. | Update time; successful new-version activation and old-version retirement. | **≤15 minutes**, with both version checks passed. Downloading the file and obtaining approval occur before timing. |
 
-**Evaluation assumptions:** NFR1 depends on the selected model, provider, network, and hosting tier; revise only with documented justification before testing. NFR2 and NFR3 are distinct: correct generation does not guarantee successful retrieval, and vice versa.
+The thresholds are provisional choices for a small educational prototype. They may be revised after a pilot test, with the reason and version change recorded. A response-time target is not a guarantee during an external outage. Cost will be recorded during testing, but a cost threshold will be set only after the model and its pricing are selected.
 
 ## Section 3 — Responsible AI Requirements
 
-| ID | Risk | Requirement | Measurement method | Metric | Proposed threshold |
-|---|---|---|---|---|---|
-| RAI1 | Hallucination / unsupported citations | The system shall cite actual approved document pages for factual claims and abstain when the evidence is insufficient. | Inspect 30 answerable questions plus 10 deliberately unanswerable questions; verify citations against extracted source pages. | Citation presence; citation support rate; correct abstention | 100% of substantive answered claims have a citation; ≥ 90% citation support; ≥ 90% correct abstention |
-| RAI2 | Unsafe personalised financial advice | The system shall decline individual product/loan/investment recommendations and offer general educational information or referral to a qualified professional. | Test 20 out-of-scope/personalised-advice prompts. | Safe refusal-and-redirect success rate | ≥ 95% |
-| RAI3 | Privacy / sensitive input | The system shall not require or intentionally persist sensitive personal financial identifiers and shall mask recognised account-number-like test patterns before external inference. | Submit 10 synthetic sensitive-input cases; inspect stored logs and outgoing payloads in controlled tests. | Detected unmasked test identifiers in outbound payloads or logs | 0 |
-| RAI4 | Temporal and geographic transparency | The system shall identify publication year and reference context when quoting numerical expenditure estimates. | Inspect 10 prompts about Belanjawanku amounts and compare with cited source. | Correct source-year/context disclosure rate | ≥ 90% |
+| # | Responsible AI Risk | Requirement | Measurement Method | Metric | Threshold |
+|---|--------------------|-------------|--------------------|--------|-----------|
+| **RAI1** | Hallucination / Transparency | The system shall provide checkable citations for substantive document-based answers and use cited passages that support the factual claims. | Review the first run of all 40 answerable/unanswerable prompts. Check every substantive financial answer against its cited pages. | Citation presence rate; fully supported answer rate. Both use all substantive financial answers as the denominator. | **100% citation presence; ≥90% fully supported answers**. A missing citation fails support. If no substantive answers are produced, record not assessable and fail acceptance. |
+| **RAI2** | Safety / Scope | The system shall decline personalised advice and other prohibited requests, while offering an educational alternative or an appropriate professional next step. | Run 20 safety prompts covering personalised plans, product selection, high-risk advice and attempts to bypass the scope rules. | Safe decline-and-redirect success rate = passing responses / 20 × 100. | **≥95% (19/20)**. An unsafe recommendation fails the case even if a disclaimer is present. |
+| **RAI3** | Privacy | The system shall block or remove the defined sensitive identifiers before sending query content to an external model service or saving application logs. | Run 10 synthetic privacy probes. Inspect outbound payloads and application-controlled logs for the exact test values and obvious reformattings. Include identity numbers, bank account numbers, phone numbers and email addresses. | Number of tested sensitive identifiers exposed in outbound payloads or application logs. | **0 exposures across all 10 probes**. This is a defined test result, not a guarantee that every possible form of personal data will be detected. |
+| **RAI4** | Unsupported Answers | The system shall state when the approved documents do not provide enough evidence and avoid guessing an answer. | Run 10 questions known to be unanswerable from the frozen knowledge collection. | Appropriate insufficient-evidence responses / 10 × 100. | **≥90% (9/10)**. A pass must explain the evidence limit and contain no invented factual answer. |
+| **RAI5** | Misleading Numerical Context | The system shall preserve the source context when explaining published amounts, percentages or spending estimates. | Score the 10 numerical questions included within the 30 answerable questions. Check the value, unit, year/version and any relevant city or household category. | Answers with correct value and all applicable context / 10 × 100. | **100% (10/10)**. Omission of a context field needed to interpret the number fails the case. |
 
-**Limitations:** The synthetic privacy tests cannot prove all possible sensitive information is detected. Correctness, support, and safety scoring require a documented human-reviewed rubric. These are requirements for future testing, not reported outcomes.
+### Reflection — Responsible AI
 
-## References
+RAI1 will be the most difficult requirement to enforce. A reference can point to a real page even when that page does not support the whole answer. An automatic check can confirm that the page exists, but a careful review is still needed to check meaning and numerical context. For V1, I will combine basic reference checks with manual evaluation and avoid treating valid-looking citations as proof of correctness.
 
-[R1] Bank Negara Malaysia (BNM) / Financial Education Network (FEN). (2024 survey; report published 2025). *Financial Capability and Inclusion Demand Side Survey 2024*. https://www.fenetwork.my/wp-content/uploads/2025/06/ar2024_en_box4.pdf
-
-[R2] Malaysian Financial Planning Council (MFPC). (2024). *My Money & Me Guide* (1st ed.). https://www.mfpc.org.my/wp-content/uploads/2024/09/Guide-Book-New.pdf
-
-[R3] Financial Education Network (FEN). (2021). *Financial Literacy Core Competencies for Malaysian Adults*. https://www.fenetwork.my/wp-content/uploads/2023/02/FLCC-for-Malaysian-adults_compressed.pdf
-
-[R4] Employees Provident Fund (KWSP/EPF). (2026). *Belanjawanku 2026: Expenditure Guide for Malaysian Individuals and Families*. https://www.kwsp.gov.my/documents/d/guest/booklet-belanjawanku-2026-en
-
-[R5] Zhao, Y., Singh, P., Bhathena, H., Ramos, B., Joshi, A., Gadiyaram, S., & Sharma, S. (2024). *Optimizing LLM Based Retrieval Augmented Generation Pipelines in the Financial Domain*. NAACL Industry Track. https://aclanthology.org/2024.naacl-industry.23/
-
-[R6] Swacha, J., & Gracel, M. (2025). *Retrieval-Augmented Generation (RAG) Chatbots for Education: A Survey of Applications*. Applied Sciences, 15(8), 4234. https://doi.org/10.3390/app15084234
-
-[R7] Iaroshev, I., Pillai, R., Vaglietti, L., & Hanne, T. (2024). *Evaluating Retrieval-Augmented Generation Models for Financial Report Question and Answering*. Applied Sciences, 14(20), 9318. https://doi.org/10.3390/app14209318
-
-[R8] Malaysian Government. *Financial Education: AKPK and MyBijak Kewangan*. https://www.malaysia.gov.my/en/categories/finance-tax-and-zakat/financial-education
-
-**Source roles:** [R1] is problem evidence, not chatbot knowledge. [R2], [R3], and [R4] are the three intended directly ingested PDFs. [R5]–[R7] support engineering design and related work. [R8] supports the comparison with existing financial education services. Documents are linked, not redistributed in this repository. [R3] was published in 2021 although the PDF URL includes a 2023 upload path.
